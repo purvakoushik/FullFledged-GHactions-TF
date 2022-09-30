@@ -4,8 +4,8 @@ resource "aws_instance" "web" {
   instance_type = "t2.micro"
 
   tags = {
-    name    = each.value
-    owner   = "koushik.mahendra@cloudeq.com"
-    purpose = "assignment"
+    Name    = each.value
+    Owner   = "koushik.mahendra@cloudeq.com"
+    Purpose = "assignment"
   }
 }

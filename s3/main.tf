@@ -3,7 +3,7 @@ resource "aws_s3_bucket" "website" {
   bucket = var.resource_s3[count.index]
 
   tags = {
-    owner   = "koushik.mahendra@cloudeq.com"
-    purpose = "assignment"
+    Owner   = "koushik.mahendra@cloudeq.com"
+    Purpose = "assignment"
   }
 }
