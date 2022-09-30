@@ -1,0 +1,32 @@
+name: destroy_object_s3
+on:
+  workflow_dispatch:
+
+env:
+  BUCKET_NAME: purva-bucket-github-actions
+  TFSTATE: mynew.tfstate
+  aws-region: us-east-1
+
+jobs:
+  terraform_destroy_object:
+    name: terraform_destroy_object
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v3
+      - name: Setup terraform hashicorp
+        uses: hashicorp/setup-terraform@v2
+        with:
+          terraform_version: 1.1.7
+
+      - name: Configure AWS credentials from Test account
+        uses: aws-actions/configure-aws-credentials@v1
+        with:
+          aws-access-key-id: ${{secrets.AWS_ACCESS_KEY_ID}}
+          aws-secret-access-key: ${{secrets.AWS_SECRET_ACCESS_KEY}}
+          aws-session-token: ${{secrets.AWS_SESSION_TOKEN}}
+          Aws-region: ${{env.aws-region}}
+
+      - name: Delete_s3_object
+        run: aws s3api delete-object --bucket purva-bucket-github-actions  --key mynew.tfstate

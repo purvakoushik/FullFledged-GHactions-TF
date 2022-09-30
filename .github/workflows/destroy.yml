@@ -1,0 +1,36 @@
+name: destroy_infrastructure
+
+on:
+  workflow_dispatch:
+
+env:
+  BUCKET_NAME: purva-bucket-github-actions
+  TFSTATE: mynew.tfstate
+  aws-region: us-east-1
+
+jobs:
+  terraform_destroy:
+    name: terraform_destroy
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v3
+      - name: Setup terraform hashicorp
+        uses: hashicorp/setup-terraform@v2
+        with:
+          terraform_version: 1.1.7
+
+      - name: Configure AWS credentials from Test account
+        uses: aws-actions/configure-aws-credentials@v1
+        with:
+          aws-access-key-id: ${{secrets.AWS_ACCESS_KEY_ID}}
+          aws-secret-access-key: ${{secrets.AWS_SECRET_ACCESS_KEY}}
+          aws-session-token: ${{secrets.AWS_SESSION_TOKEN}}
+          Aws-region: ${{env.aws-region}}
+
+      - name: terraform init
+        run: terraform init -reconfigure -backend-config="bucket=${{env.BUCKET_NAME}}" -backend-config="key=${{env.TFSTATE}}"
+
+      - name: terraform destroy
+        run: terraform destroy -auto-approve
